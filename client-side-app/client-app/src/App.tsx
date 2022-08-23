@@ -1,4 +1,4 @@
-import { Header, List } from "semantic-ui-react";
+import { Header } from "semantic-ui-react";
 import "./App.css";
 import ClassComponent from "./components/ClassComponent";
 

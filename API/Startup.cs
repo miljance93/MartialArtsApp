@@ -33,8 +33,10 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Dodao sam service za ILogger da bih mogao da vrsim ispis na konzoli
+            //Added ILogger service to provide printing on console
             services.AddSingleton(typeof(ILogger), typeof(Logger<Startup>));
+
+            //Added Cors policy
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
@@ -75,27 +77,23 @@ namespace API
                 });
             });
 
-            
+            //Added SQL Connection string
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            //Added AutoMapper provided with an assembly where is defined
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
+            //Added Mediator provided with an assembly where is defined
             services.AddMediatR(typeof(List).Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+
             services.AddHttpContextAccessor();
 
+            //Added Repositories 
             services.AddRepositoryServices();
-
-            //services.AddIdentityCore<ApplicationUser>(opt =>
-            //{
-            //    opt.Password.RequireNonAlphanumeric = false;
-            //})
-            //.AddEntityFrameworkStores<ApplicationDbContext>()
-            //.AddSignInManager<SignInManager<ApplicationUser>>();
-
-
 
             //For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
