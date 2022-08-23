@@ -32,6 +32,7 @@ namespace Persistence.Core
             CreateMap<UserFollowingDTO, UserFollowing>();
             CreateMap<Class, ClassDTO>();
             CreateMap<ClassDTO, Class>();
+            CreateMap<AuditLogsDTO, AuditLogs>();
             //CreateMap<PagedList<ApplicationUser>, PagedList<ClientDTO>>();
             //CreateMap<PagedList<ClientDTO>, PagedList<ApplicationUser>>();
         }

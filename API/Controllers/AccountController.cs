@@ -36,29 +36,22 @@ namespace API.Controllers
         }
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] ClientDTO client)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var clientExists = await userManager.FindByNameAsync(client.UserName);
+            var clientExists = await userManager.FindByNameAsync(model.Username);
             if (clientExists != null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists" });
             }
 
-
-            var role = await context.Roles.FirstOrDefaultAsync(x => x.Name == client.Role.Name);
-            if (role == null)
+            ApplicationUser user = new()
             {
-                return BadRequest(role);
-            }
-            ApplicationUser user = new ApplicationUser
-            {
-                PasswordHash = client.Password,
+                PasswordHash = model.Password,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = client.UserName,
-                Role = role
+                UserName = model.Password
             };
 
-            var result = await userManager.CreateAsync(user, client.Password);
+            var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response
@@ -95,7 +88,7 @@ namespace API.Controllers
 
                 var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudince"],
+                    audience: _configuration["JWT:ValidAudience"],
                     expires: DateTime.Now.AddHours(3),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)

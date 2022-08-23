@@ -1,3 +1,4 @@
+using Application.Core;
 using Application.Interfaces;
 using Application.Reviews;
 using Domain.IdentityAuth;
@@ -10,13 +11,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Core;
 using Persistence.Repository;
 using System.Text;
-
+using static API.ExtensionMethods.Extensions;
 namespace API
 {
     public class Startup
@@ -31,6 +33,15 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Dodao sam service za ILogger da bih mogao da vrsim ispis na konzoli
+            services.AddSingleton(typeof(ILogger), typeof(Logger<Startup>));
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
+                });
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -72,19 +83,10 @@ namespace API
 
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddMediatR(typeof(List).Assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+            services.AddHttpContextAccessor();
 
-            services.AddScoped<ICoachRepository, CoachRepository>();
-            services.AddScoped<IReviewRepository, ReviewRepository>();
-            services.AddScoped<IScheduleRepository, ScheduleRepository>();
-            services.AddScoped<IPostRepository, PostRepository>();
-            services.AddScoped<IMartialArtRepository, MartialArtRepository>();
-            services.AddScoped<IClientRepository, ClientRepository>();
-            services.AddScoped<IMentorshipRepository, MentorshipRepository>();
-            services.AddScoped<ISkillsRepository, SkillsRepository>();
-            services.AddScoped<IPackageRepository, PackageRepository>();
-            services.AddScoped<IUserFollowingRepository, UserFollowingRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<IClassRepository, ClassRepository>();
+            services.AddRepositoryServices();
 
             //services.AddIdentityCore<ApplicationUser>(opt =>
             //{
@@ -144,6 +146,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();

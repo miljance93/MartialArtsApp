@@ -21,6 +21,7 @@ namespace Persistence
         public new DbSet<Role> Roles { get; set; }
         public DbSet<UserFollowing> UserFollowings { get; set; }
         public DbSet<Class> Classes { get; set; }
+        public DbSet<AuditLogs> AuditLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Application.Core;
 using Domain.Models;
+using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
@@ -11,6 +12,7 @@ namespace API.Controllers
     public class BaseAPIController : ControllerBase
     {
         private IMediator _mediator;
+
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
 
         protected ActionResult HandleResult<T>(Result<T> result)

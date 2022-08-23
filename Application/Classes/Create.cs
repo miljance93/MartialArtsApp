@@ -2,12 +2,11 @@
 using Application.DTO;
 using Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Application.Classes
 {
@@ -23,9 +22,11 @@ namespace Application.Classes
             {
                 _classRepository = classRepository;
             }
+
             public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
-            {
+            {             
                 var result = await _classRepository.PostAsync(request.Class);
+
                 return new Result<bool> { IsSuccess = true, Value = result };
             }
         }
