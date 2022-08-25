@@ -9,6 +9,9 @@ namespace Application.DTO
     public class MartialArtDTO
     {
         public int Id { get; set; }
-        public int CoachId { get; set; }
+        public string Name { get; set; }
+        public string CoachId { get; set; }
+        public string ShortDescription { get; set; }
+        public string LongDescription { get; set; }
     }
 }
