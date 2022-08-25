@@ -22,7 +22,6 @@ namespace API.ExtensionMethods
             services.AddScoped<IPackageRepository, PackageRepository>();
             services.AddScoped<IUserFollowingRepository, UserFollowingRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<IClassRepository, ClassRepository>();
             services.AddScoped<IAuditLogsRepository, AuditLogsRepository>();
 
             return services;
