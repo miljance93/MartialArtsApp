@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Container, Header } from "semantic-ui-react";
+import { Container } from "semantic-ui-react";
 import MartialArtDashboard from "../../components/MartialArtDashboard";
 import { MartialArt } from "../models/martialArt";
 import NavBar from "./NavBar";
@@ -27,15 +27,27 @@ function App() {
     setSelectedMartialArt(undefined);
   }
 
+  function handleFormOpen(id?: string) {
+    id ? handleSelectMartialArt(id) : handleCancelSelectMartialArt();
+    setEditMode(true);
+  }
+
+  function handleFormClose() {
+    setEditMode(false);
+  }
+
   return (
     <>
-      <NavBar />
+      <NavBar openForm={handleFormOpen} />
       <Container style={{ margin: "7em" }}>
         <MartialArtDashboard
           martialArts={martialArts}
           selectedMartialArt={selectedMartialArt}
           selectMartialArt={handleSelectMartialArt}
           cancelSelectMartialArt={handleCancelSelectMartialArt}
+          editMode={editMode}
+          openForm={handleFormOpen}
+          closeForm={handleFormClose}
         />
       </Container>
     </>

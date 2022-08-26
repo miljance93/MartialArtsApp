@@ -1,7 +1,13 @@
+import axios from "axios";
 import React from "react";
 import { Button, Container, Menu } from "semantic-ui-react";
+import { MartialArt } from "../models/martialArt";
 
-export default function NavBar() {
+interface Props {
+  openForm: () => void;
+}
+
+export default function NavBar({ openForm }: Props) {
   return (
     <Menu inverted fixed="top">
       <Container>
@@ -15,7 +21,7 @@ export default function NavBar() {
         </Menu.Item>
         <Menu.Item name="Marial Art" />
         <Menu.Item>
-          <Button positive content="Create Martial Art" />
+          <Button onClick={openForm} positive content="Create Martial Art" />
         </Menu.Item>
       </Container>
     </Menu>

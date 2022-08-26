@@ -1,15 +1,16 @@
-import React from "react";
-import { Button, Card, Icon, Image } from "semantic-ui-react";
+import { Button, Card, Image } from "semantic-ui-react";
 import { MartialArt } from "../models/martialArt";
 
 interface Props {
   martialArt: MartialArt;
   cancelSelectMartialArt: () => void;
+  openForm: (id: string) => void;
 }
 
-export default function ClassroomDetail({
+export default function MartialArtDetail({
   martialArt,
   cancelSelectMartialArt,
+  openForm,
 }: Props) {
   return (
     <Card fluid>
@@ -19,7 +20,12 @@ export default function ClassroomDetail({
         <Card.Header>{martialArt.name}</Card.Header>
         <Card.Description>{martialArt.longDescription}</Card.Description>
         <Button.Group>
-          <Button basic color="blue" content="Edit" />
+          <Button
+            onClick={() => openForm(martialArt.id.toString())}
+            basic
+            color="blue"
+            content="Edit"
+          />
           <Button
             onClick={cancelSelectMartialArt}
             basic

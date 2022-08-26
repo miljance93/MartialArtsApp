@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Grid, List } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import { MartialArt } from "../app/models/martialArt";
 import MartialArtList from "./MartialArtList";
 import MartialArtDetail from "../app/details/MartialArtDetail";
@@ -11,6 +9,9 @@ interface Props {
   selectedMartialArt: MartialArt | undefined;
   selectMartialArt: (id: string) => void;
   cancelSelectMartialArt: () => void;
+  editMode: boolean;
+  openForm: (id: string) => void;
+  closeForm: () => void;
 }
 
 export default function MartialArtDashboard({
@@ -18,6 +19,9 @@ export default function MartialArtDashboard({
   selectedMartialArt,
   selectMartialArt,
   cancelSelectMartialArt,
+  editMode,
+  openForm,
+  closeForm,
 }: Props) {
   return (
     <Grid>
@@ -28,13 +32,19 @@ export default function MartialArtDashboard({
         />
       </Grid.Column>
       <Grid.Column width="6">
-        {selectedMartialArt && (
+        {selectedMartialArt && !editMode && (
           <MartialArtDetail
             martialArt={selectedMartialArt}
             cancelSelectMartialArt={cancelSelectMartialArt}
+            openForm={openForm}
           />
         )}
-        <MartialArtForm />
+        {editMode && (
+          <MartialArtForm
+            closeForm={closeForm}
+            martialArt={selectedMartialArt}
+          />
+        )}
       </Grid.Column>
     </Grid>
   );
