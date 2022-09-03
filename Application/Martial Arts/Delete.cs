@@ -13,7 +13,7 @@ namespace Application.Martial_Arts
 {
     public class Delete
     {
-        public record Command(MartialArtDTO MartialArt) : IRequest<Result<bool>>;
+        public record Command(string Id) : IRequest<Result<bool>>;
 
         public class Handler : IRequestHandler<Command, Result<bool>>
         {
@@ -26,9 +26,10 @@ namespace Application.Martial_Arts
 
             public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
             {
-                if (await _martialArtRepository.Exists(request.MartialArt))
+                var getMartialArt = await _martialArtRepository.GetByIdAsync<MartialArtDTO>(x => x.Id.ToString() == request.Id);
+                if (getMartialArt != null)
                 {
-                    var result = await _martialArtRepository.DeleteAsync(request.MartialArt);
+                    var result = await _martialArtRepository.DeleteAsync(getMartialArt);
                     return new Result<bool> { IsSuccess = true, Value = result };
                 }
 

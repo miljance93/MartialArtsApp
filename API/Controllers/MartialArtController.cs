@@ -34,10 +34,10 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Create.Command(martialArt)));
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteMartialArt(MartialArtDTO martialArt)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMartialArt(string id)
         {
-            return HandleResult(await Mediator.Send(new Delete.Command(martialArt)));
+            return HandleResult(await Mediator.Send(new Delete.Command(id)));
         }
     }
 }
