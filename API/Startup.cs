@@ -1,5 +1,4 @@
 using Application.Core;
-using Application.Interfaces;
 using Application.Reviews;
 using Domain.IdentityAuth;
 using MediatR;
@@ -16,7 +15,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Core;
-using Persistence.Repository;
 using System.Text;
 using static API.ExtensionMethods.Extensions;
 namespace API
