@@ -114,6 +114,10 @@ namespace Persistence
                     .HasForeignKey(r => r.ClientId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
+            //Seed Data
+            builder.Entity<ApplicationUser>().HasData(
+                new ApplicationUser { FirstName = "Jonh", LastName = "Smith" }
+                );
         }
     }
 }

@@ -27,6 +27,7 @@ namespace API
                 logger.LogInformation("Starting my application");
                 var context = services.GetRequiredService<ApplicationDbContext>();
                 await context.Database.MigrateAsync();
+                await Seed.SeedData(context);
             }
             catch (Exception ex)
             {

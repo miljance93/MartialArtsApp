@@ -78,7 +78,7 @@ namespace API
             //Added SQL Connection string
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             //Added AutoMapper provided with an assembly where is defined
@@ -126,7 +126,7 @@ namespace API
                     //ValidateAudience = false
 
                 };
-            });
+            });//.AddGoogle(x => );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -142,6 +142,7 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
 
             app.UseCors("CorsPolicy");
 
