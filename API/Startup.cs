@@ -98,6 +98,8 @@ namespace API
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.ConfigureApplicationCookie(options => options.LoginPath = "account/login");
+
             //Adding Authentication
             services.AddAuthentication(options =>
               {
