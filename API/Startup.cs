@@ -1,3 +1,4 @@
+using API.SignalR;
 using Application.Core;
 using Application.Reviews;
 using Domain.IdentityAuth;
@@ -17,6 +18,7 @@ using Persistence;
 using Persistence.Core;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using static API.ExtensionMethods.Extensions;
 namespace API
 {
@@ -116,6 +118,7 @@ namespace API
 
             //Added AutoMapper provided with an assembly where is defined
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+            services.AddSignalR();
 
             //Added Mediator provided with an assembly where is defined
             services.AddMediatR(typeof(List).Assembly);
@@ -161,6 +164,19 @@ namespace API
                     //ValidateAudience = false
 
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat"))) 
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             }).AddGoogle(googleOptions =>
             {
                 googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
@@ -191,6 +207,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }

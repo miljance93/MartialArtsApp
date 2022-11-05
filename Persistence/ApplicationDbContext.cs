@@ -21,6 +21,7 @@ namespace Persistence
         public new DbSet<Role> Roles { get; set; }
         public DbSet<UserFollowing> UserFollowings { get; set; }
         public DbSet<AuditLogs> AuditLogs { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -114,10 +115,6 @@ namespace Persistence
                     .HasForeignKey(r => r.ClientId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
-            //Seed Data
-            builder.Entity<ApplicationUser>().HasData(
-                new ApplicationUser { FirstName = "Jonh", LastName = "Smith" }
-                );
         }
     }
 }
