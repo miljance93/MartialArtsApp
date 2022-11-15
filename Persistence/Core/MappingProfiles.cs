@@ -33,9 +33,10 @@ namespace Persistence.Core
             CreateMap<AuditLogsDTO, AuditLogs>();
             //CreateMap<PagedList<ApplicationUser>, PagedList<ClientDTO>>();
             //CreateMap<PagedList<ClientDTO>, PagedList<ApplicationUser>>();
-            CreateMap<Comment, CommentDTO>().ReverseMap()
-                .ForMember(x => x.Author.FirstName, y => y.MapFrom(z => z.DisplayName))
-                .ForMember(x => x.Author.UserName, y => y.MapFrom(z => z.Username));
+
+            //CreateMap<Comment, CommentDTO>().ReverseMap()
+            //    .ForMember(x => x.Author.FirstName, y => y.MapFrom(z => z.DisplayName))
+            //    .ForMember(x => x.Author.UserName, y => y.MapFrom(z => z.Username));
         }
     }
 }

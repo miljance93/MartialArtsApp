@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.IdentityAuth
 {
@@ -8,7 +7,8 @@ namespace Domain.IdentityAuth
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string MobilePhone { get; set; }        
+        public string MobilePhone { get; set; }
+        public int? RoleId { get; set; }
         public Role Role { get; set; }
         public List<Post> Posts { get; set; }
         public ICollection<Comment> Comments { get; set; }
