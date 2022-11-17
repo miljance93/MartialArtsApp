@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Application.Core;
 using Domain.Models;
-using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
@@ -17,10 +16,21 @@ namespace API.Controllers
 
         protected ActionResult HandleResult<T>(Result<T> result)
         {
-            if (result != null && result.IsSuccess == true)
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            if (result.IsSuccess && result.Value != null)
             {
                 return Ok(result);
             }
+
+            if (result.IsSuccess && result.Value == null)
+            {
+                return NotFound(result);
+            }
+
             return BadRequest(result.Error);
         }
 

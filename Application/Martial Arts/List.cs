@@ -29,10 +29,10 @@ namespace Application.Martial_Arts
                 var result = await _martialArtRepository.GetAllAsync<MartialArtDTO>();
                 if (result != null)
                 {
-                    return new Result<List<MartialArtDTO>> { IsSuccess = true, Value = result.ToList() };
+                    return  Result<List<MartialArtDTO>>.Success(result.ToList());
                 }
 
-                return new Result<List<MartialArtDTO>> { IsSuccess = false, Error = "No martial arts found!" };
+                return Result<List<MartialArtDTO>>.Failure("Couldn't find list of martial arts");
             }
         }
     }

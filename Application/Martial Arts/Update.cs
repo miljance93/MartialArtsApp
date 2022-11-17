@@ -1,11 +1,8 @@
 ﻿using Application.Core;
 using Application.DTO;
 using Application.Interfaces;
+using FluentValidation;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,9 +10,17 @@ namespace Application.Martial_Arts
 {
     public class Update
     {
-        public record Command(MartialArtDTO MartialArt) : IRequest<Result<bool>>;
+        public record Command(MartialArtDTO MartialArt) : IRequest<Result<Unit>>;
 
-        public class Handler : IRequestHandler<Command, Result<bool>>
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.MartialArt).SetValidator(new MartialArtValidator());
+            }
+        }
+
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly IMartialArtRepository _martialArtRepository;
 
@@ -24,15 +29,15 @@ namespace Application.Martial_Arts
                 _martialArtRepository = martialArtRepository;
             }
 
-            public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 if (await _martialArtRepository.Exists(request.MartialArt))
                 {
-                    var result = await _martialArtRepository.UpdateAsync(request.MartialArt);
-                    return new Result<bool> { IsSuccess = true, Value = result };
+                    await _martialArtRepository.UpdateAsync(request.MartialArt);
+                    return Result<Unit>.Success(Unit.Value);
                 }
 
-                return new Result<bool> { IsSuccess = false, Error = "Martial art is not updated!" };
+                return  Result<Unit>.Failure("Failed to update martial art");
             }
         }
     }
