@@ -1,15 +1,14 @@
 ﻿using Application.DTO;
 using Application.Martial_Arts;
-using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
     public class MartialArtController : BaseAPIController 
     {
-
         [HttpGet]
         public async Task<IActionResult> GetAllMartialArts()
         {

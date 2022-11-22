@@ -1,4 +1,5 @@
 using API.Middleware;
+using API.Services;
 using API.SignalR;
 using Application.Core;
 using Application.Martial_Arts;
@@ -6,9 +7,11 @@ using Domain.IdentityAuth;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,7 +51,13 @@ namespace API
                 });
             });
 
-            services.AddControllers().AddFluentValidation(config =>
+            services.AddScoped<TokenService>();
+
+            services.AddControllers(opt =>
+            {
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                opt.Filters.Add(new AuthorizeFilter(policy));
+            }).AddFluentValidation(config =>
             {
                 config.RegisterValidatorsFromAssemblyContaining<List>();
             });
@@ -140,6 +149,7 @@ namespace API
                 .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(options => options.LoginPath = "account/login");
+            
 
             //Adding Authentication
             services.AddAuthentication(options =>
@@ -158,15 +168,10 @@ namespace API
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = Configuration["JWT:ValidAudience"],
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],
+                    ValidAudience = Configuration["JWT:Audience"],
+                    ValidIssuer = Configuration["JWT:Issuer"],
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
-
-                    //ValidateIssuerSigningKey = true,
-                    //IssuerSigningKey = key,
-                    //ValidateIssuer = false,
-                    //ValidateAudience = false
 
                 };
                 options.Events = new JwtBearerEvents

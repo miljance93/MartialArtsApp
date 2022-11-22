@@ -1,108 +1,118 @@
-﻿using Application.Core;
+﻿using API.Services;
 using Application.DTO;
 using Domain;
 using Domain.IdentityAuth;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Persistence;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+
+    [AllowAnonymous]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly ApplicationDbContext context;
-        private readonly IConfiguration _configuration;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly TokenService _tokenService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IConfiguration configuration)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+            TokenService tokenService)
         {
-            this.userManager = userManager;
-            this.context = context;
-            _configuration = configuration;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _tokenService = tokenService;
         }
+
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<ActionResult<UserDTO>> Register(RegisterModel model)
         {
-            var clientExists = await userManager.FindByNameAsync(model.Username);
-            if (clientExists != null)
+            var emailExists = await _userManager.FindByEmailAsync(model.Email);
+            if (emailExists != null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists" });
+                ModelState.AddModelError("email", "Email is taken");
+                return ValidationProblem();
+            }
+
+            var usernameExists = await _userManager.FindByNameAsync(model.Username);
+            if (usernameExists != null)
+            {
+                ModelState.AddModelError("username", "Username is taken");
+                return ValidationProblem();
             }
 
             ApplicationUser user = new()
             {
+                Email = model.Email,
                 PasswordHash = model.Password,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Password
+                UserName = model.Username,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
             };
 
-            var result = await userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response
                 {
                     Status = "Error",
-                    Message = "User creation failed!, Please check user details and try again."
+                    Message = "User creation failed! Please check user details and try again."
                 });
             }
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully" });
+            return CreateUserObject(user);
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<ActionResult<UserDTO>> Login(LoginDTO model)
         {
-            var user = await userManager.FindByNameAsync(model.Username);
-            if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+            var user = await _userManager.FindByNameAsync(model.Email);
+            if (user == null)
             {
-                var userRoles = await userManager.GetRolesAsync(user);
+                return Unauthorized();
+            }
 
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo,
-                    User = user.UserName
-                });                
+            if (result.Succeeded)
+            {
+                return CreateUserObject(user);
             }
             return Unauthorized();
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<UserDTO>> GetCurrentUser()
+        {
+            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+
+            return CreateUserObject(user);
+        }
+
+
+        private UserDTO CreateUserObject(ApplicationUser user)
+        {
+            return new UserDTO
+            {
+                DisplayName = user.FirstName,
+                Image = null,
+                Token = _tokenService.CreateToken(user),
+                Username = user.UserName,
+            };
+        }
+
     }
+
 }
+
