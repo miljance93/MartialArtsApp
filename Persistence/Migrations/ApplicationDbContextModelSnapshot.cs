@@ -76,8 +76,8 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("MartialArtId")
-                        .HasColumnType("integer");
+                    b.Property<string>("MartialArtId")
+                        .HasColumnType("text");
 
                     b.HasKey("CommentId");
 
@@ -168,14 +168,11 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.MartialArt", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CoachId")
+                    b.Property<string>("Id")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LongDescription")
                         .HasColumnType("text");
@@ -188,24 +185,25 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CoachId");
-
                     b.ToTable("MartialArts");
                 });
 
-            modelBuilder.Entity("Domain.MartialArtSkill", b =>
+            modelBuilder.Entity("Domain.MartialArtAttendee", b =>
                 {
-                    b.Property<int>("MartialArtId")
-                        .HasColumnType("integer");
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("text");
 
-                    b.Property<int>("SkillId")
-                        .HasColumnType("integer");
+                    b.Property<string>("MartialArtId")
+                        .HasColumnType("text");
 
-                    b.HasKey("MartialArtId", "SkillId");
+                    b.Property<bool>("IsCoach")
+                        .HasColumnType("boolean");
 
-                    b.HasIndex("SkillId");
+                    b.HasKey("AppUserId", "MartialArtId");
 
-                    b.ToTable("MartialArtSkill");
+                    b.HasIndex("MartialArtId");
+
+                    b.ToTable("MartialArtAttendees");
                 });
 
             modelBuilder.Entity("Domain.Mentorship", b =>
@@ -525,9 +523,7 @@ namespace Persistence.Migrations
 
                     b.HasOne("Domain.MartialArt", "MartialArt")
                         .WithMany("Comments")
-                        .HasForeignKey("MartialArtId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MartialArtId");
 
                     b.Navigation("Author");
 
@@ -543,32 +539,23 @@ namespace Persistence.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Domain.MartialArt", b =>
+            modelBuilder.Entity("Domain.MartialArtAttendee", b =>
                 {
-                    b.HasOne("Domain.IdentityAuth.ApplicationUser", "Coach")
+                    b.HasOne("Domain.IdentityAuth.ApplicationUser", "User")
                         .WithMany("MartialArts")
-                        .HasForeignKey("CoachId");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Coach");
-                });
-
-            modelBuilder.Entity("Domain.MartialArtSkill", b =>
-                {
                     b.HasOne("Domain.MartialArt", "MartialArt")
-                        .WithMany("Skills")
+                        .WithMany("Attendees")
                         .HasForeignKey("MartialArtId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Skill", "Skill")
-                        .WithMany("MartialArts")
-                        .HasForeignKey("SkillId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("MartialArt");
 
-                    b.Navigation("Skill");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Mentorship", b =>
@@ -745,9 +732,9 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.MartialArt", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Attendees");
 
-                    b.Navigation("Skills");
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("Domain.Role", b =>
@@ -757,8 +744,6 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Skill", b =>
                 {
-                    b.Navigation("MartialArts");
-
                     b.Navigation("Trainers");
                 });
 #pragma warning restore 612, 618

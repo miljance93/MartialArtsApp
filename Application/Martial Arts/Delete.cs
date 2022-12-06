@@ -26,7 +26,7 @@ namespace Application.Martial_Arts
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var getMartialArt = await _martialArtRepository.GetByIdAsync<MartialArtDTO>(x => x.Id.ToString() == request.Id);
+                var getMartialArt = await _martialArtRepository.GetByIdAsync<MartialArtDTO>(x => x.Id == request.Id);
                 if (getMartialArt != null)
                 {
                     await _martialArtRepository.DeleteAsync(getMartialArt);

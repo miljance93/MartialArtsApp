@@ -19,7 +19,7 @@ namespace Domain.IdentityAuth
         public Role Role { get; set; }
         public List<Post> Posts { get; set; }
         public ICollection<Comment> Comments { get; set; }
-        public ICollection<MartialArt> MartialArts { get; set; }        
+        public ICollection<MartialArtAttendee> MartialArts { get; set; }        
         public ICollection<Review> ClientReviews { get; set; }
         public ICollection<Schedule> ClientsSchedule { get; set; }        
         public ICollection<Review> CoachReviews { get; set; }

@@ -1,4 +1,6 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.UserAccess;
+using Infrastructure.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +26,7 @@ namespace API.ExtensionMethods
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IAuditLogsRepository, AuditLogsRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IUserAccessor, UserAccessor>();
 
             return services;
         }

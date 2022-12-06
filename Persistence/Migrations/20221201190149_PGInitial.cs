@@ -40,6 +40,21 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MartialArts",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    ShortDescription = table.Column<string>(type: "text", nullable: true),
+                    LongDescription = table.Column<string>(type: "text", nullable: true),
+                    IsCancelled = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MartialArts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -229,24 +244,54 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MartialArts",
+                name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    CommentId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    ShortDescription = table.Column<string>(type: "text", nullable: true),
-                    LongDescription = table.Column<string>(type: "text", nullable: true),
-                    CoachId = table.Column<string>(type: "text", nullable: true)
+                    Body = table.Column<string>(type: "text", nullable: true),
+                    AuthorId = table.Column<string>(type: "text", nullable: true),
+                    MartialArtId = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MartialArts", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.CommentId);
                     table.ForeignKey(
-                        name: "FK_MartialArts_AspNetUsers_CoachId",
-                        column: x => x.CoachId,
+                        name: "FK_Comments_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Comments_MartialArts_MartialArtId",
+                        column: x => x.MartialArtId,
+                        principalTable: "MartialArts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MartialArtAttendees",
+                columns: table => new
+                {
+                    AppUserId = table.Column<string>(type: "text", nullable: false),
+                    MartialArtId = table.Column<string>(type: "text", nullable: false),
+                    IsCoach = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MartialArtAttendees", x => new { x.AppUserId, x.MartialArtId });
+                    table.ForeignKey(
+                        name: "FK_MartialArtAttendees_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MartialArtAttendees_MartialArts_MartialArtId",
+                        column: x => x.MartialArtId,
+                        principalTable: "MartialArts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -387,29 +432,6 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "MartialArtSkill",
-                columns: table => new
-                {
-                    MartialArtId = table.Column<int>(type: "integer", nullable: false),
-                    SkillId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MartialArtSkill", x => new { x.MartialArtId, x.SkillId });
-                    table.ForeignKey(
-                        name: "FK_MartialArtSkill_MartialArts_MartialArtId",
-                        column: x => x.MartialArtId,
-                        principalTable: "MartialArts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MartialArtSkill_Skill_SkillId",
-                        column: x => x.SkillId,
-                        principalTable: "Skill",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AppUserSkill_SkillId",
                 table: "AppUserSkill",
@@ -458,14 +480,19 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MartialArts_CoachId",
-                table: "MartialArts",
-                column: "CoachId");
+                name: "IX_Comments_AuthorId",
+                table: "Comments",
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MartialArtSkill_SkillId",
-                table: "MartialArtSkill",
-                column: "SkillId");
+                name: "IX_Comments_MartialArtId",
+                table: "Comments",
+                column: "MartialArtId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MartialArtAttendees_MartialArtId",
+                table: "MartialArtAttendees",
+                column: "MartialArtId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Mentorships_CoachId",
@@ -522,7 +549,10 @@ namespace Persistence.Migrations
                 name: "AuditLogs");
 
             migrationBuilder.DropTable(
-                name: "MartialArtSkill");
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "MartialArtAttendees");
 
             migrationBuilder.DropTable(
                 name: "Mentorships");
@@ -543,13 +573,13 @@ namespace Persistence.Migrations
                 name: "UserFollowings");
 
             migrationBuilder.DropTable(
+                name: "Skill");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "MartialArts");
-
-            migrationBuilder.DropTable(
-                name: "Skill");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

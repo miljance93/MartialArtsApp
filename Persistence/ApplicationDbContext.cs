@@ -22,10 +22,25 @@ namespace Persistence
         public DbSet<UserFollowing> UserFollowings { get; set; }
         public DbSet<AuditLogs> AuditLogs { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<MartialArtAttendee> MartialArtAttendees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<MartialArtAttendee>(b =>
+            {
+                b.HasKey(ma => new { ma.AppUserId, ma.MartialArtId });
+
+                b.HasOne(u => u.User)
+                .WithMany(m => m.MartialArts)
+                .HasForeignKey(ma => ma.AppUserId);
+
+                b.HasOne(m => m.MartialArt)
+                .WithMany(a => a.Attendees)
+                .HasForeignKey(ma => ma.MartialArtId);
+            });
+
             builder.Entity<Review>(b =>
             {
                 b.HasKey(r => new { r.CoachId, r.ClientId });
@@ -41,20 +56,7 @@ namespace Persistence
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
-            builder.Entity<MartialArtSkill>(b =>
-            {
-                b.HasKey(m => new { m.MartialArtId, m.SkillId });
-
-                b.HasOne(m => m.MartialArt)
-                    .WithMany(s => s.Skills)
-                    .HasForeignKey(m => m.MartialArtId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                b.HasOne(s => s.Skill)
-                    .WithMany(c => c.MartialArts)
-                    .HasForeignKey(s => s.SkillId)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
+           
 
             builder.Entity<AppUserSkill>(b =>
             {

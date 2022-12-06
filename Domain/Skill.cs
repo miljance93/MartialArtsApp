@@ -12,6 +12,5 @@ namespace Domain
         public int Id { get; set; }       
         public string Name { get; set; }
         public ICollection<AppUserSkill> Trainers { get; set; }
-        public ICollection<MartialArtSkill> MartialArts { get; set; }
     }
 }

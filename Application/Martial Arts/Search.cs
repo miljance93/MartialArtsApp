@@ -9,7 +9,7 @@ namespace Application.Martial_Arts
 {
     public class Search
     {
-        public record Query(int Id) : IRequest<Result<MartialArtDTO>>;
+        public record Query(string Id) : IRequest<Result<MartialArtDTO>>;
 
         public class Handler : IRequestHandler<Query, Result<MartialArtDTO>>
         {

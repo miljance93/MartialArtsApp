@@ -5,6 +5,8 @@ using Application.Core;
 using Application.Martial_Arts;
 using Domain.IdentityAuth;
 using FluentValidation.AspNetCore;
+using Infrastructure.Photos;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -192,6 +194,19 @@ namespace API
                 googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
                 googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
             });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsMartialArtHost", policy =>
+                {
+                    policy.Requirements.Add(new IsCoachRequirement());
+                });
+            });
+
+
+            services.AddTransient<IAuthorizationHandler, IsCoachRequirementHandler>();
+
+            services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

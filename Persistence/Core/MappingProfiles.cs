@@ -2,7 +2,7 @@
 using AutoMapper;
 using Domain;
 using Domain.IdentityAuth;
-using Domain.Models;
+using System.Linq;
 
 namespace Persistence.Core
 {
@@ -10,27 +10,23 @@ namespace Persistence.Core
     {
         public MappingProfiles()
         {
-            CreateMap<ApplicationUser, ClientDTO>();
-            CreateMap<ClientDTO, ApplicationUser>();
-            CreateMap<ApplicationUser, CoachDTO>();
-            CreateMap<CoachDTO, ApplicationUser>();
-            CreateMap<MartialArt, MartialArtDTO>();
-            CreateMap<MartialArtDTO, MartialArt>();
-            CreateMap<Schedule, ScheduleDTO>();
-            CreateMap<ScheduleDTO, Schedule>();
-            CreateMap<Review, ReviewDTO>();
-            CreateMap<ReviewDTO, Review>();
+            CreateMap<ApplicationUser, ClientDTO>().ReverseMap();
+            CreateMap<ApplicationUser, CoachDTO>().ReverseMap();
+            CreateMap<MartialArt, MartialArtDTO>()
+                .ForMember(d => d.HostUsername, o => o.MapFrom(s => s.Attendees.FirstOrDefault(x => x.IsCoach).User.UserName)).ReverseMap();
+            CreateMap<MartialArtAttendee, Application.Profiles.Profile>()
+                .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.User.FirstName))
+                .ForMember(d => d.Username, o => o.MapFrom(s => s.User.UserName));
+            CreateMap<Schedule, ScheduleDTO>().ReverseMap();
+            CreateMap<Review, ReviewDTO>().ReverseMap();
             CreateMap<Post, PostDTO>()
-                .ForMember(x => x.CoachId, o => o.MapFrom(p => p.CoachId));
-            CreateMap<PostDTO, Post>();
-            CreateMap<Mentorship, MentorshipDTO>();
-            CreateMap<MentorshipDTO, Mentorship>();
+                .ForMember(x => x.CoachId, o => o.MapFrom(p => p.CoachId))
+                .ReverseMap();
+            CreateMap<Mentorship, MentorshipDTO>().ReverseMap();
             CreateMap<Skill, CoachSearchDTO>();
-            CreateMap<RoleDTO, Role>();
-            CreateMap<Role, RoleDTO>();
-            CreateMap<UserFollowing, UserFollowingDTO>();
-            CreateMap<UserFollowingDTO, UserFollowing>();;
-            CreateMap<AuditLogsDTO, AuditLogs>();
+            CreateMap<Role, RoleDTO>().ReverseMap();
+            CreateMap<UserFollowing, UserFollowingDTO>().ReverseMap();
+            CreateMap<AuditLogs, AuditLogsDTO>().ReverseMap();
             //CreateMap<PagedList<ApplicationUser>, PagedList<ClientDTO>>();
             //CreateMap<PagedList<ClientDTO>, PagedList<ApplicationUser>>();
 

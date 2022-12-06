@@ -15,7 +15,7 @@ namespace Domain
         public string AuthorId { get; set; }
         [ForeignKey("AuthorId")]
         public ApplicationUser Author { get; set; }
-        public int MartialArtId { get; set; }
+        public string MartialArtId { get; set; }
         [ForeignKey("MartialArtId")]
         public MartialArt MartialArt { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

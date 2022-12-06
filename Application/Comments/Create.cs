@@ -9,7 +9,7 @@ namespace Application.Comments
 {
     public class Create
     {
-        public record Command(string Body, int MartialArtId) : IRequest<Result<CommentDTO>>;
+        public record Command(string Body, string MartialArtId) : IRequest<Result<CommentDTO>>;
 
         public class Handler : IRequestHandler<Command, Result<CommentDTO>>
         {
@@ -31,11 +31,11 @@ namespace Application.Comments
                     return null;
                 }
 
-                var coach = await _coachRepository.GetByIdAsync<CoachDTO>(x => x.Id == martialArt.CoachId);
+              //  var coach = await _coachRepository.GetByIdAsync<CoachDTO>(x => x.Id == martialArt.CoachId);
 
                 var comment = new CommentDTO
                 {
-                    Username = coach.UserName,
+                    //Username = coach.UserName,
                     Body = request.Body
                 };
 

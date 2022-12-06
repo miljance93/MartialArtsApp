@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
     public class MartialArtController : BaseAPIController 
     {
         [HttpGet]
@@ -16,14 +15,16 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetMartialArt(int id)
+        public async Task<IActionResult> GetMartialArt(string id)
         {
             return HandleResult(await Mediator.Send(new Search.Query(id)));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> EditMartialArt(MartialArtDTO martialArt)
+        [Authorize(Policy = "IsMartialArtHost")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditMartialArt(string id, MartialArtDTO martialArt)
         {
+            martialArt.Id = id;
             return HandleResult(await Mediator.Send(new Update.Command(martialArt)));
         }
 
@@ -33,10 +34,18 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Create.Command(martialArt)));
         }
 
+
+        [Authorize(Policy = "IsMartialArtHost")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMartialArt(string id)
         {
             return HandleResult(await Mediator.Send(new Delete.Command(id)));
+        }
+
+        [HttpPost("{id}/attend")]
+        public async Task<IActionResult> Attend(string id)
+        {
+            return HandleResult(await Mediator.Send(new UpdateAttendance.Command { Id= id }));
         }
     }
 }

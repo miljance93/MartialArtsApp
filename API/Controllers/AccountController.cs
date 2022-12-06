@@ -31,8 +31,7 @@ namespace API.Controllers
             _tokenService = tokenService;
         }
 
-        [HttpPost]
-        [Route("register")]
+        [HttpPost("register")]
         public async Task<ActionResult<UserDTO>> Register(RegisterModel model)
         {
             var emailExists = await _userManager.FindByEmailAsync(model.Email);
@@ -72,11 +71,10 @@ namespace API.Controllers
             return CreateUserObject(user);
         }
 
-        [HttpPost]
-        [Route("login")]
+        [HttpPost("login")]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO model)
         {
-            var user = await _userManager.FindByNameAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 return Unauthorized();

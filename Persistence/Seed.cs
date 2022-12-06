@@ -36,9 +36,9 @@ namespace Persistence
 
             if (!context.MartialArts.Any())
             {
-                context.MartialArts.Add(new MartialArt { Name = "Muay Thai" });
-                context.MartialArts.Add(new MartialArt { Name = "Brazilian Jiu-Jitsu" });
-                context.MartialArts.Add(new MartialArt { Name = "Mixed Martial Arts" });
+                context.MartialArts.Add(new MartialArt { Id = "1", Name = "Muay Thai" });
+                context.MartialArts.Add(new MartialArt { Id = "2", Name = "Brazilian Jiu-Jitsu" });
+                context.MartialArts.Add(new MartialArt { Id = "3", Name = "Mixed Martial Arts" });
 
                 await context.SaveChangesAsync();
             }
