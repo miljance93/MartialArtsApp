@@ -27,6 +27,7 @@ namespace API.ExtensionMethods
             services.AddScoped<IAuditLogsRepository, AuditLogsRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddScoped<IPhotoRepository, PhotoRepository>();
 
             return services;
         }

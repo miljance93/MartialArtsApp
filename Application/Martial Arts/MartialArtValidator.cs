@@ -1,9 +1,10 @@
 ﻿using Application.DTO;
+using Domain;
 using FluentValidation;
 
 namespace Application.Martial_Arts
 {
-    public class MartialArtValidator : AbstractValidator<MartialArtDTO>
+    public class MartialArtValidator : AbstractValidator<MartialArt>
     {
         public MartialArtValidator()
         {

@@ -29,5 +29,6 @@ namespace Domain.IdentityAuth
         public ICollection<AppUserSkill> Skills { get; set; }
         public ICollection<UserFollowing> ClientsFollowing { get; set; }
         public ICollection<UserFollowing> CoachesFollowing { get; set; }
+        public ICollection<Photo> Photos { get; set; }
     }
 }

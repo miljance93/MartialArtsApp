@@ -1,5 +1,6 @@
 ﻿using Application.DTO;
 using Application.Martial_Arts;
+using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -22,14 +23,14 @@ namespace API.Controllers
 
         [Authorize(Policy = "IsMartialArtHost")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditMartialArt(string id, MartialArtDTO martialArt)
+        public async Task<IActionResult> EditMartialArt(string id, MartialArt martialArt)
         {
             martialArt.Id = id;
             return HandleResult(await Mediator.Send(new Update.Command(martialArt)));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMartialArt(MartialArtDTO martialArt)
+        public async Task<IActionResult> CreateMartialArt(MartialArt martialArt)
         {
             return HandleResult(await Mediator.Send(new Create.Command(martialArt)));
         }

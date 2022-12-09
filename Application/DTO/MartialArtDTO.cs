@@ -11,6 +11,6 @@ namespace Application.DTO
         public string LongDescription { get; set; }
         public string HostUsername { get; set; }
         public bool IsCancelled { get; set; }
-        public ICollection<MartialArtAttendee> Attendees { get; set; } = new List<MartialArtAttendee>();
+        public ICollection<AttendeeDTO> Attendees { get; set; }
     }
 }

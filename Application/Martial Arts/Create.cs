@@ -8,6 +8,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace Application.Martial_Arts
 {
     public class Create
     {
-        public record Command(MartialArtDTO MartialArt) : IRequest<Result<Unit>>;
+        public record Command(MartialArt MartialArt) : IRequest<Result<Unit>>;
 
         public class CommandValidator : AbstractValidator<Command>
         {
@@ -42,23 +43,13 @@ namespace Application.Martial_Arts
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
-
-
-                var martialArt = new MartialArt
-                {
-                    Id = request.MartialArt.Id,
-                    Name = request.MartialArt.Name,
-                    LongDescription = request.MartialArt.LongDescription,
-                    ShortDescription = request.MartialArt.ShortDescription,
-                    Attendees = request.MartialArt.Attendees
-                };
-
+                
                 var attendee = new MartialArtAttendee
                 {
                     User = user,
-                    MartialArt = martialArt,
+                    MartialArt = request.MartialArt,
                     IsCoach = true
-                };
+                };  
 
                  request.MartialArt.Attendees.Add(attendee);
 

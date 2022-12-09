@@ -2,6 +2,7 @@ using API.Middleware;
 using API.Services;
 using API.SignalR;
 using Application.Core;
+using Application.Interfaces.PhotoAccess;
 using Application.Martial_Arts;
 using Domain.IdentityAuth;
 using FluentValidation.AspNetCore;
@@ -207,6 +208,7 @@ namespace API
             services.AddTransient<IAuthorizationHandler, IsCoachRequirementHandler>();
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

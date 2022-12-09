@@ -1,6 +1,7 @@
 ﻿using Application.Core;
 using Application.DTO;
 using Application.Interfaces;
+using Domain;
 using FluentValidation;
 using MediatR;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace Application.Martial_Arts
 {
     public class Update
     {
-        public record Command(MartialArtDTO MartialArt) : IRequest<Result<Unit>>;
+        public record Command(MartialArt MartialArt) : IRequest<Result<Unit>>;
 
         public class CommandValidator : AbstractValidator<Command>
         {
