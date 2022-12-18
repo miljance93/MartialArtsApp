@@ -23,7 +23,7 @@ namespace API.Controllers
 
             if (result.IsSuccess && result.Value != null)
             {
-                return Ok(result);
+                return Ok(result.Value);
             }
 
             if (result.IsSuccess && result.Value == null)

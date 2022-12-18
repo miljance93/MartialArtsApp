@@ -15,7 +15,7 @@ namespace Application.Comments
     {
         public class Query : IRequest<Result<List<CommentDTO>>>
         {
-            public int MartialArtId { get; set; }
+            public string MartialArtId { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<List<CommentDTO>>>
@@ -29,9 +29,9 @@ namespace Application.Comments
             public async Task<Result<List<CommentDTO>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var comments = await _commentRepository.GetAllAsync<CommentDTO>();
-                comments.Where(x => x.MartialArtId == request.MartialArtId).OrderBy(x => x.CreatedAt);
+                var commentsToReturn = comments.Where(x => x.MartialArtId == request.MartialArtId).OrderByDescending(x => x.CreatedAt);
 
-                return new Result<List<CommentDTO>> { IsSuccess = true, Value = comments.ToList() };
+                return Result<List<CommentDTO>>.Success(commentsToReturn.ToList());
             }
         }
     }

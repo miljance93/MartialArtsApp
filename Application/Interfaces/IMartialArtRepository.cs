@@ -13,5 +13,6 @@ namespace Application.Interfaces
     {
         Task<IEnumerable<MartialArtDTO>> GetMartialArtsWithUsers(CancellationToken cancellationToken);
         Task<MartialArt> GetMartialArtWithUsers(string id);
+        Task<MartialArtDTO> GetMartialArt(string id);
     }
 }

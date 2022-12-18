@@ -50,7 +50,7 @@ namespace API
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
+                    policy.AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithOrigins("http://localhost:3000");
                 });
             });
 
@@ -135,6 +135,7 @@ namespace API
 
             //Added AutoMapper provided with an assembly where is defined
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+            //Add SignalR
             services.AddSignalR();
 
             //Added Mediator provided with an assembly where is defined
@@ -190,7 +191,8 @@ namespace API
                         return Task.CompletedTask;
                     }
                 };
-            }).AddGoogle(googleOptions =>
+            })
+            .AddGoogle(googleOptions =>
             {
                 googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
                 googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];

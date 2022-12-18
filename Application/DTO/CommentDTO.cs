@@ -8,12 +8,12 @@ namespace Application.DTO
 {
     public class CommentDTO
     {
-        public int CommentId { get; set; }
+        public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public string Body { get; set; }
         public string Username { get; set; }
         public string DisplayName { get; set; }
         public string Image { get; set; }
-        public int MartialArtId { get; set; }
+        public string MartialArtId { get; set; }
     }
 }

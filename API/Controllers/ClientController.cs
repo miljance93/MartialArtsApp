@@ -1,10 +1,8 @@
 ﻿using Application.Clients;
 using Application.DTO;
-using Application.Users;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -49,12 +47,6 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteClient(ClientDTO client)
         {
             return HandleResult(await Mediator.Send(new Delete.Command(client)));
-        }
-
-        [HttpPost("{userFollowing}")]
-        public async Task<IActionResult> Follow(UserFollowingDTO userFollowingDTO)
-        {
-            return HandleResult(await Mediator.Send(new FollowToggle.Command(userFollowingDTO)));
         }
     }
 }

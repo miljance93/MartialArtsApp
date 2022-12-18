@@ -22,10 +22,11 @@ namespace Application.Martial_Arts
 
             public async Task<Result<MartialArtDTO>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var result = await _martialArtRepository.FindAsync<MartialArtDTO>(x => x.Id == request.Id);
-                if (result != null)
+                var martialArt = await _martialArtRepository.GetMartialArt(request.Id);
+                
+                if (martialArt != null)
                 {
-                    return new Result<MartialArtDTO> { IsSuccess = true, Value = result };
+                    return new Result<MartialArtDTO> { IsSuccess = true, Value = martialArt };
                 }
 
                 return new Result<MartialArtDTO> { IsSuccess = false, Error = "No martial art found!" };

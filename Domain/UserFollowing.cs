@@ -9,9 +9,9 @@ namespace Domain
 {
     public class UserFollowing
     {
-        public string ClientId { get; set; }
-        public ApplicationUser Client { get; set; }
-        public string CoachId { get; set; }
-        public ApplicationUser Coach { get; set; }
+        public string ObserverId { get; set; }
+        public ApplicationUser Observer { get; set; }
+        public string TargetId { get; set; }
+        public ApplicationUser Target { get; set; }
     }
 }

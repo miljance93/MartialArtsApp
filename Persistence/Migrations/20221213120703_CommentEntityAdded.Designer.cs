@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistence;
@@ -11,9 +12,10 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221213120703_CommentEntityAdded")]
+    partial class CommentEntityAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,11 +63,11 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Comment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CommentId"));
 
                     b.Property<string>("AuthorId")
                         .HasColumnType("text");
@@ -79,7 +81,7 @@ namespace Persistence.Migrations
                     b.Property<string>("MartialArtId")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("CommentId");
 
                     b.HasIndex("AuthorId");
 
@@ -372,15 +374,15 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.UserFollowing", b =>
                 {
-                    b.Property<string>("ObserverId")
+                    b.Property<string>("CoachId")
                         .HasColumnType("text");
 
-                    b.Property<string>("TargetId")
+                    b.Property<string>("ClientId")
                         .HasColumnType("text");
 
-                    b.HasKey("ObserverId", "TargetId");
+                    b.HasKey("CoachId", "ClientId");
 
-                    b.HasIndex("TargetId");
+                    b.HasIndex("ClientId");
 
                     b.ToTable("UserFollowings");
                 });
@@ -664,21 +666,21 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.UserFollowing", b =>
                 {
-                    b.HasOne("Domain.IdentityAuth.ApplicationUser", "Observer")
-                        .WithMany("Followings")
-                        .HasForeignKey("ObserverId")
+                    b.HasOne("Domain.IdentityAuth.ApplicationUser", "Client")
+                        .WithMany("CoachesFollowing")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.IdentityAuth.ApplicationUser", "Coach")
+                        .WithMany("ClientsFollowing")
+                        .HasForeignKey("CoachId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.IdentityAuth.ApplicationUser", "Target")
-                        .WithMany("Followers")
-                        .HasForeignKey("TargetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Client");
 
-                    b.Navigation("Observer");
-
-                    b.Navigation("Target");
+                    b.Navigation("Coach");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -738,19 +740,19 @@ namespace Persistence.Migrations
 
                     b.Navigation("Clients");
 
+                    b.Navigation("ClientsFollowing");
+
                     b.Navigation("ClientsSchedule");
 
                     b.Navigation("CoachReviews");
 
                     b.Navigation("Coaches");
 
+                    b.Navigation("CoachesFollowing");
+
                     b.Navigation("CoachesSchedule");
 
                     b.Navigation("Comments");
-
-                    b.Navigation("Followers");
-
-                    b.Navigation("Followings");
 
                     b.Navigation("MartialArts");
 

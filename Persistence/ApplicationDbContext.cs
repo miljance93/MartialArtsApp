@@ -29,6 +29,11 @@ namespace Persistence
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Comment>()
+                .HasOne(m => m.MartialArt)
+                .WithMany(c => c.Comments)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<MartialArtAttendee>(b =>
             {
                 b.HasKey(ma => new { ma.AppUserId, ma.MartialArtId });
@@ -106,17 +111,17 @@ namespace Persistence
 
             builder.Entity<UserFollowing>(b =>
             {
-                b.HasKey(uf => new { uf.CoachId, uf.ClientId });
+                b.HasKey(uf => new { uf.ObserverId, uf.TargetId });
 
-                b.HasOne(uf => uf.Coach)
-                    .WithMany(cl => cl.ClientsFollowing)
-                    .HasForeignKey(r => r.CoachId)
+                b.HasOne(uf => uf.Observer)
+                    .WithMany(cl => cl.Followings)
+                    .HasForeignKey(r => r.ObserverId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                b.HasOne(uf => uf.Client)
-                    .WithMany(c => c.CoachesFollowing)
-                    .HasForeignKey(r => r.ClientId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                b.HasOne(uf => uf.Target)
+                    .WithMany(c => c.Followers)
+                    .HasForeignKey(r => r.TargetId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

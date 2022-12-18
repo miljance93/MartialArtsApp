@@ -10,7 +10,7 @@ namespace Domain
         public string ShortDescription { get; set; }
         public string LongDescription { get; set; }
         public bool IsCancelled { get; set; }
-        public List<Comment> Comments { get; set; }
+        public List<Comment> Comments { get; set; } = new List<Comment>();
         public ICollection<MartialArtAttendee> Attendees { get; set; } = new List<MartialArtAttendee>();
     }
 }

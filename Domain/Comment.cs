@@ -10,7 +10,7 @@ namespace Domain
 {
     public class Comment
     {
-        public int CommentId { get; set; }
+        public int Id { get; set; }
         public string Body { get; set; }
         public string AuthorId { get; set; }
         [ForeignKey("AuthorId")]

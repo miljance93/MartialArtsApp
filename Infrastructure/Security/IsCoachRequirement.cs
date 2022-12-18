@@ -27,12 +27,12 @@ namespace Infrastructure.Security
 
             if (userId == null) return Task.CompletedTask;
 
-            var martialArtId = int.Parse(_httpContextAccessor.HttpContext?.Request.RouteValues
-                .SingleOrDefault(x => x.Key == "id").Value?.ToString());
+            var martialArtId = _httpContextAccessor.HttpContext?.Request.RouteValues
+                .SingleOrDefault(x => x.Key == "id").Value?.ToString();
 
             var attendee = _dbContext.MartialArtAttendees
                 .AsNoTracking()
-                .SingleOrDefaultAsync(x => x.AppUserId == userId && x.MartialArtId == martialArtId.ToString())
+                .SingleOrDefaultAsync(x => x.AppUserId == userId && x.MartialArtId == martialArtId)
                 .Result;
 
             if (attendee == null)
