@@ -3,7 +3,6 @@ using AutoMapper;
 using Domain;
 using Domain.IdentityAuth;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Persistence.Core
 {
@@ -12,8 +11,6 @@ namespace Persistence.Core
         public MappingProfiles()
         {
             string currentUsername = null;
-            CreateMap<ApplicationUser, ClientDTO>().ReverseMap();
-            CreateMap<ApplicationUser, CoachDTO>().ReverseMap();
             CreateMap<MartialArt, MartialArtDTO>()
                 .ForMember(d => d.HostUsername, o => o.MapFrom(s => s.Attendees.FirstOrDefault(x => x.IsCoach).User.UserName)).ReverseMap();
             CreateMap<MartialArtAttendee, AttendeeDTO>()
@@ -23,14 +20,7 @@ namespace Persistence.Core
                 .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.User.Followers.Count))
                 .ForMember(d => d.FollowingCount, o => o.MapFrom(s => s.User.Followings.Count))
                 .ForMember(d => d.Following, o => o.MapFrom(s => s.User.Followers.Any(x => x.Observer.UserName == currentUsername)));
-            CreateMap<Schedule, ScheduleDTO>().ReverseMap();
-            CreateMap<Review, ReviewDTO>().ReverseMap();
-            CreateMap<Post, PostDTO>()
-                .ForMember(x => x.CoachId, o => o.MapFrom(p => p.CoachId))
-                .ReverseMap();
-            CreateMap<Mentorship, MentorshipDTO>().ReverseMap();
-            CreateMap<Skill, CoachSearchDTO>();
-            CreateMap<Role, RoleDTO>().ReverseMap();
+           
             CreateMap<UserFollowing, UserFollowing>().ReverseMap();
             CreateMap<AuditLogs, AuditLogsDTO>().ReverseMap();
             CreateMap<Photo, Photo>();

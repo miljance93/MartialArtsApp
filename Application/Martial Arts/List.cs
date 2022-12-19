@@ -2,6 +2,7 @@
 using Application.DTO;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Models;
 using MediatR;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,12 @@ namespace Application.Martial_Arts
 {
     public class List
     {
-        public record Query : IRequest<Result<List<MartialArtDTO>>>;
+        public class Query : IRequest<Result<PagedList<MartialArtDTO>>>
+        {
+            public PagingParams Params { get; set; }
+        }
 
-        public class Handler : IRequestHandler<Query, Result<List<MartialArtDTO>>>
+        public class Handler : IRequestHandler<Query, Result<PagedList<MartialArtDTO>>>
         {
             private readonly IMartialArtRepository _martialArtRepository;
             private readonly IMapper _mapper;
@@ -25,16 +29,11 @@ namespace Application.Martial_Arts
                 _mapper = mapper;
             }
 
-            public async Task<Result<List<MartialArtDTO>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<PagedList<MartialArtDTO>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var result = await _martialArtRepository.GetMartialArtsWithUsers(cancellationToken);
-                
-                if (result != null)
-                {
-                    return  Result<List<MartialArtDTO>>.Success(_mapper.Map<List<MartialArtDTO>>(result.ToList()));;
-                }
+                var martialArts = await _martialArtRepository.GetMartialArtsWithUsers(cancellationToken, request.Params.PageNumber, request.Params.PageSize);
 
-                return Result<List<MartialArtDTO>>.Failure("Couldn't find list of martial arts");
+                return Result<PagedList<MartialArtDTO>>.Success(martialArts);
             }
         }
     }

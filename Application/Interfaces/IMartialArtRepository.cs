@@ -1,5 +1,6 @@
 ﻿using Application.DTO;
 using Domain;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Application.Interfaces
 {
     public interface IMartialArtRepository : IRepository<MartialArt>
     {
-        Task<IEnumerable<MartialArtDTO>> GetMartialArtsWithUsers(CancellationToken cancellationToken);
+        Task<PagedList<MartialArtDTO>> GetMartialArtsWithUsers(CancellationToken cancellationToken, int pageNumber, int pageSize);
         Task<MartialArt> GetMartialArtWithUsers(string id);
         Task<MartialArtDTO> GetMartialArt(string id);
     }

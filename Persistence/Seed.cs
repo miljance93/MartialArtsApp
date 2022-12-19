@@ -25,15 +25,7 @@ namespace Persistence
                     await userManager.CreateAsync(user, "Test12.");
                 }
             }
-            //if (!context.Reviews.Any())
-            //{
-            //    context.Reviews.Add(new Review { CoachId = "2", StarRating = 5, ClientId = "1" });
-            //    context.Reviews.Add(new Review { CoachId = "2", StarRating = 4, ClientId = "2" });
-            //    context.Reviews.Add(new Review { CoachId = "2", StarRating = 3, ClientId = "3" });
-
-            //    await context.SaveChangesAsync();
-            //}
-
+       
             if (!context.MartialArts.Any())
             {
                 context.MartialArts.Add(new MartialArt { Id = "1", Name = "Muay Thai" });

@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 namespace Domain.Models
 {
     
-    public class PagingParameterModel
+    public class PagingParams
     { 
-        const int maxPageSize = 20;
+        const int maxPageSize = 50;
         [Required]
         public int PageNumber { get; set; } = 1;
-        private int _pageSize = 10;
+        private int _pageSize = 2;
         [Required]
         public int PageSize
         {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Application.Core;
 using Domain.Models;
+using API.ExtensionMethods;
 
 namespace API.Controllers
 {
@@ -34,13 +35,25 @@ namespace API.Controllers
             return BadRequest(result.Error);
         }
 
-        protected ActionResult HandlePagedResult<T>(PagedList<T> result)
+        protected ActionResult HandlePagedResult<T>(Result<PagedList<T>> result)
         {
-            if (result != null && result.Count != 0)
+            if (result == null)
             {
-                return Ok(result);
+                return NotFound();
             }
-            return BadRequest("No results found");
+
+            if (result.IsSuccess && result.Value != null)
+            {
+                Response.AddPaginationHeader(result.Value.CurrentPage, result.Value.PageSize, result.Value.TotalCount, result.Value.TotalPages);
+                return Ok(result.Value);
+            }
+
+            if (result.IsSuccess && result.Value == null)
+            {
+                return NotFound(result);
+            }
+
+            return BadRequest(result.Error);
         }
     }
 }

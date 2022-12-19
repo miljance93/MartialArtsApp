@@ -15,18 +15,10 @@ namespace Domain.IdentityAuth
             }
         }
         public string MobilePhone { get; set; }
-        public int? RoleId { get; set; }
-        public Role Role { get; set; }
-        public List<Post> Posts { get; set; }
+        public int? RoleId { get; set; }       
         public ICollection<Comment> Comments { get; set; }
-        public ICollection<MartialArtAttendee> MartialArts { get; set; }        
-        public ICollection<Review> ClientReviews { get; set; }
-        public ICollection<Schedule> ClientsSchedule { get; set; }        
-        public ICollection<Review> CoachReviews { get; set; }
-        public ICollection<Schedule> CoachesSchedule { get; set; }
-        public ICollection<Mentorship> Clients { get; set; }
-        public ICollection<Mentorship> Coaches { get; set; }
-        public ICollection<AppUserSkill> Skills { get; set; }
+        public ICollection<MartialArtAttendee> MartialArts { get; set; }      
+      
         public ICollection<UserFollowing> Followings { get; set; }
         public ICollection<UserFollowing> Followers { get; set; }
         public ICollection<Photo> Photos { get; set; }

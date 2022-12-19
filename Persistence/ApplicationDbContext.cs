@@ -12,13 +12,7 @@ namespace Persistence
 
         }
 
-        public DbSet<MartialArt> MartialArts { get; set; }
-        public DbSet<Post> Posts { get; set; }
-        public DbSet<Review> Reviews { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
-        public DbSet<Mentorship> Mentorships { get; set; }
-        public DbSet<Package> Packages { get; set; }
-        public new DbSet<Role> Roles { get; set; }
+        public DbSet<MartialArt> MartialArts { get; set; }       
         public DbSet<UserFollowing> UserFollowings { get; set; }
         public DbSet<AuditLogs> AuditLogs { get; set; }
         public DbSet<Comment> Comments { get; set; }
@@ -47,67 +41,7 @@ namespace Persistence
                 .HasForeignKey(ma => ma.MartialArtId);
             });
 
-            builder.Entity<Review>(b =>
-            {
-                b.HasKey(r => new { r.CoachId, r.ClientId });
-
-                b.HasOne(r => r.Coach)
-                    .WithMany(cl => cl.ClientReviews)
-                    .HasForeignKey(r => r.CoachId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                b.HasOne(r => r.Client)
-                    .WithMany(c => c.CoachReviews)
-                    .HasForeignKey(r => r.ClientId)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
            
-
-            builder.Entity<AppUserSkill>(b =>
-            {
-                b.HasKey(a => new { a.TrainerId, a.SkillId });
-
-                b.HasOne(a => a.Trainer)
-                    .WithMany(s => s.Skills)
-                    .HasForeignKey(a => a.TrainerId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                b.HasOne(s => s.Skill)
-                    .WithMany(t => t.Trainers)
-                    .HasForeignKey(s => s.SkillId)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
-            builder.Entity<Schedule>(b =>
-            {
-                b.HasKey(a => new { a.ClientId, a.CoachId });
-
-                b.HasOne(a => a.Client)
-                    .WithMany(s => s.ClientsSchedule)
-                    .HasForeignKey(a => a.ClientId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
-                b.HasOne(s => s.Coach)
-                    .WithMany(t => t.CoachesSchedule)
-                    .HasForeignKey(s => s.CoachId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            builder.Entity<Mentorship>(b =>
-            {
-                b.HasKey(m => new { m.ClientId, m.CoachId });
-
-                b.HasOne(c => c.Coach)
-                    .WithMany(cl => cl.Clients)
-                    .HasForeignKey(c => c.CoachId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                b.HasOne(c => c.Client)
-                    .WithMany(co => co.Coaches)
-                    .HasForeignKey(c => c.ClientId)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
 
             builder.Entity<UserFollowing>(b =>
             {
