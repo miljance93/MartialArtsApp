@@ -11,29 +11,18 @@ namespace Persistence
     {
         public static async Task SeedData(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            if (!context.Users.Any())
-            {
-                var users = new List<ApplicationUser>
-                {
-                    new ApplicationUser { FirstName = "Jonh", LastName = "Jonson", Email = "jonhjonson@test.com", UserName = "jonhjonson@test.com" },
-                    new ApplicationUser { FirstName = "Mike", LastName = "Tyson", Email = "miketyson@test.com", UserName = "miketyson@test.com" },
-                    new ApplicationUser { FirstName = "Kamaru", LastName = "Ousman", Email = "kamaruousman@test.com", UserName = "kamaruousman@test.com" },
-                };
+            //if (!context.Users.Any())
+            //{
+            //    var users = new List<ApplicationUser>
+            //    {
+            //        new ApplicationUser(){ Email = "tester@test.com", FirstName = "Tester", LastName = "Testeric"}
+            //    };
 
-                foreach (var user in users)
-                {
-                    await userManager.CreateAsync(user, "Test12.");
-                }
-            }
-       
-            if (!context.MartialArts.Any())
-            {
-                context.MartialArts.Add(new MartialArt { Id = "1", Name = "Muay Thai" });
-                context.MartialArts.Add(new MartialArt { Id = "2", Name = "Brazilian Jiu-Jitsu" });
-                context.MartialArts.Add(new MartialArt { Id = "3", Name = "Mixed Martial Arts" });
-
-                await context.SaveChangesAsync();
-            }
+            //    foreach (var user in users)
+            //    {
+            //        await userManager.CreateAsync(user, "Test12.");
+            //    }
+            //}
         }
     }
 }

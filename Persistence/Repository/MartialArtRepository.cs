@@ -26,6 +26,24 @@ namespace Persistence.Repository
             _userAccessor = userAccessor;
         }
 
+        public async Task<bool> CreateAsync(MartialArt martialArt)
+        {
+            bool result;
+            try
+            {
+                _context.MartialArts.Add(martialArt);
+                await _context.SaveChangesAsync();
+
+                result = true;
+            }
+            catch (System.Exception)
+            {
+                result = false;
+            }
+
+            return result;
+        }
+
         public async Task<MartialArtDTO> GetMartialArt(string id)
         {
             var martialArt = await _context.MartialArts
@@ -52,6 +70,24 @@ namespace Persistence.Repository
             var martialArtToReturn = _mapper.Map<MartialArtDTO>(martialArt);
 
             return martialArt;
+        }
+
+        public async Task<bool> UpdateAsync(MartialArt martialArt)
+        {
+            bool result;
+            try
+            {
+                _context.MartialArts.Update(martialArt);
+                await _context.SaveChangesAsync();
+
+                result = true;
+            }
+            catch (System.Exception)
+            {
+                result = false;
+            }
+
+            return result;
         }
     }
 }

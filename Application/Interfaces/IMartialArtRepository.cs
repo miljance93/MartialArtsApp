@@ -15,5 +15,7 @@ namespace Application.Interfaces
         Task<PagedList<MartialArtDTO>> GetMartialArtsWithUsers(CancellationToken cancellationToken, int pageNumber, int pageSize);
         Task<MartialArt> GetMartialArtWithUsers(string id);
         Task<MartialArtDTO> GetMartialArt(string id);
+        Task<bool> CreateAsync(MartialArt martialArt);
+        Task<bool> UpdateAsync(MartialArt martialArt);
     }
 }

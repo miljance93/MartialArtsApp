@@ -33,7 +33,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMartialArt(MartialArt martialArt)
         {
-            return HandleResult(await Mediator.Send(new Create.Command(martialArt)));
+            return HandleResult(await Mediator.Send(new Create.Command { MartialArt = martialArt}));
         }
 
 

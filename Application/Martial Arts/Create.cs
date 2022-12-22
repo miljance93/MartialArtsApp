@@ -16,7 +16,10 @@ namespace Application.Martial_Arts
 {
     public class Create
     {
-        public record Command(MartialArt MartialArt) : IRequest<Result<Unit>>;
+        public class Command : IRequest<Result<Unit>>
+        {
+            public MartialArt MartialArt { get; set; }
+        }
 
         public class CommandValidator : AbstractValidator<Command>
         {
@@ -58,7 +61,7 @@ namespace Application.Martial_Arts
                     return Result<Unit>.Failure($"{request.MartialArt.Name} is not created");
                 }
 
-                await _martialArtRepository.PostAsync(request.MartialArt);
+                await _martialArtRepository.CreateAsync(request.MartialArt);
                 return Result<Unit>.Success(Unit.Value);
             }
         }
