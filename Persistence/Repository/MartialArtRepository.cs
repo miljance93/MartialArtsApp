@@ -1,11 +1,13 @@
 ﻿using Application.DTO;
 using Application.Interfaces;
 using Application.Interfaces.UserAccess;
+using Application.Martial_Arts;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -52,12 +54,25 @@ namespace Persistence.Repository
             return martialArt;
         }
 
-        public async Task<PagedList<MartialArtDTO>> GetMartialArtsWithUsers(CancellationToken cancellationToken, int pageNumber, int pageSize)
+        public async Task<PagedList<MartialArtDTO>> GetMartialArtsWithUsers(CancellationToken cancellationToken, 
+            int pageNumber, int pageSize, MartialArtParams @params)
         {
             var query = context.MartialArts
+                .Where(d => d.Date >= @params.StartDate)
+                .OrderBy(d => d.Date)
                 .ProjectTo<MartialArtDTO>(_mapper.ConfigurationProvider,
                     new { currentUsername = _userAccessor.GetUsername() })// Mapira ono sto nam je potrebno. Primer: ne izvlaci ConcurencyStamp. Time je ubrzan query 
                 .AsQueryable();
+
+            if(@params.IsGoing && !@params.IsHost)
+            {
+                query = query.Where(x => x.Attendees.Any(a => a.Username == _userAccessor.GetUsername()));  
+            }
+
+            if (@params.IsHost && !@params.IsGoing) 
+            {
+                query = query.Where(x => x.HostUsername == _userAccessor.GetUsername());
+            }
 
             return await PagedList<MartialArtDTO>.CreateAsync(query, pageNumber, pageSize);
         }

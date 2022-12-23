@@ -1,7 +1,5 @@
-﻿using Application.DTO;
-using Application.Martial_Arts;
+﻿using Application.Martial_Arts;
 using Domain;
-using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -11,7 +9,7 @@ namespace API.Controllers
     public class MartialArtController : BaseAPIController 
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllMartialArts([FromQuery] PagingParams @params)
+        public async Task<IActionResult> GetAllMartialArts([FromQuery] MartialArtParams @params)
         {
             return HandlePagedResult(await Mediator.Send(new List.Query { Params = @params}));
         }

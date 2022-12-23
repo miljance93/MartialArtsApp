@@ -15,7 +15,7 @@ namespace Application.Martial_Arts
     {
         public class Query : IRequest<Result<PagedList<MartialArtDTO>>>
         {
-            public PagingParams Params { get; set; }
+            public MartialArtParams Params { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<PagedList<MartialArtDTO>>>
@@ -31,7 +31,7 @@ namespace Application.Martial_Arts
 
             public async Task<Result<PagedList<MartialArtDTO>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var martialArts = await _martialArtRepository.GetMartialArtsWithUsers(cancellationToken, request.Params.PageNumber, request.Params.PageSize);
+                var martialArts = await _martialArtRepository.GetMartialArtsWithUsers(cancellationToken, request.Params.PageNumber, request.Params.PageSize, request.Params);
 
                 return Result<PagedList<MartialArtDTO>>.Success(martialArts);
             }
