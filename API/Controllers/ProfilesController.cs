@@ -12,5 +12,11 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new Details.Query(username)));
         }
+
+        [HttpGet("{username}/martialarts")]
+        public async Task<IActionResult> GetUserEvents(string username, string predicate)
+        {
+            return HandleResult(await Mediator.Send(new ListMartialArts.Query { Username = username, Predicate = predicate }));
+        }
     }
 }

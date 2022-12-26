@@ -38,6 +38,13 @@ namespace Persistence.Core
                 .ForMember(x => x.Username, y => y.MapFrom(z => z.Author.UserName))
                 .ForMember(x => x.Image, o => o.MapFrom(s => s.Author.Photos.FirstOrDefault(x => x.IsMain).Url));
 
+            CreateMap<MartialArtAttendee, UserMartialArtDTO>()
+                .ForMember(d => d.Id, o => o.MapFrom(s => s.MartialArt.Id))
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.MartialArt.Date))
+                .ForMember(d => d.Title, o => o.MapFrom(s => s.MartialArt.Name))
+                .ForMember(d => d.Category, o => o.MapFrom(s => s.MartialArt.Category))
+                .ForMember(d => d.HostUsername, o => o.MapFrom(s => s.MartialArt.Attendees.FirstOrDefault(x => x.IsCoach).User.UserName));
+
 
             CreateMap<MartialArt, MartialArt>();
         }

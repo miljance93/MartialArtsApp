@@ -1,4 +1,5 @@
-﻿using Application.DTO;
+﻿using Application.Core;
+using Application.DTO;
 using Application.Interfaces;
 using Application.Interfaces.UserAccess;
 using Application.Martial_Arts;
@@ -44,6 +45,32 @@ namespace Persistence.Repository
             }
 
             return result;
+        }
+
+        public async Task<Result<List<UserMartialArtDTO>>> GetEvents(string username, string predicate)
+        {
+            var query = _context.MartialArtAttendees
+                .Where(u => u.User.UserName == username)
+                .OrderBy(ma => ma.MartialArt.Date)
+                .ProjectTo<UserMartialArtDTO>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+
+            switch (predicate)
+            {
+                case "past":
+                    query = query.Where(ma => ma.Date <= DateTime.UtcNow);
+                    break;
+                case "hosting":
+                    query = query.Where(ma => ma.HostUsername == username);
+                    break;
+                default:
+                    query = query.Where(ma => ma.Date >= DateTime.UtcNow);
+                    break;
+            }
+
+            var martialArts = await query.ToListAsync();
+
+            return Result<List<UserMartialArtDTO>>.Success(martialArts);
         }
 
         public async Task<MartialArtDTO> GetMartialArt(string id)
